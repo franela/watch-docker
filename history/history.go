@@ -15,7 +15,7 @@ type Pull struct {
 	Id int64 `json:id`
 }
 
-func main() {
+func fetchHistory() {
 	token := ""
 	session, err := mgo.Dial("localhost")
 	if err != nil {

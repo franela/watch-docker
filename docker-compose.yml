@@ -1,6 +1,14 @@
-version: "2"
+version: '3.2'
+
 services:
-        mongo:
-                image: mongo
-                ports:
-                        - "27017:27017"
+  web:
+    image: franela/watch-docker:${TAG:-latest}
+    command: ./watch-docker
+
+  mongo:
+    image: mongo
+    volumes:
+      - mongo:/data/db
+
+volumes:
+  mongo:
