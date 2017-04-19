@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/franela/watch-docker/handlers"
 	"github.com/gorilla/mux"
@@ -18,5 +20,10 @@ func main() {
 	n := negroni.Classic()
 	n.UseHandler(r)
 
-	log.Fatal(http.ListenAndServe(":3000", n))
+	port, exists := os.LookupEnv("PORT")
+	if !exists {
+		port = "3000"
+	}
+
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), n))
 }
