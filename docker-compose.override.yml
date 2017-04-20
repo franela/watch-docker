@@ -7,7 +7,7 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ${GOPATH:-/go}/src:/go/src
+      - ./:/go/src/github.com/franela/watch-docker
 
   mongo:
     image: mongo
