@@ -18,11 +18,11 @@ type Pull struct {
 func main() {
 	token := ""
 	
-	mongo_url := "mongo"
+	mongoUrl := "mongo"
 	if url, exists := os.LookupEnv("MONGO_URL"); exists {
-		mongo_url = url
+		mongoUrl = url
 	}
-	session, err := mgo.Dial(mongo_url)
+	session, err := mgo.Dial(mongoUrl)
 	if err != nil {
 		panic(err)
 	}

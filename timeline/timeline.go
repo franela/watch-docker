@@ -10,27 +10,50 @@ import (
 	"github.com/google/go-github/github"
 )
 
-type Pull struct {
-	Id int64 `json:id`
+var mongoSession *mgo.Session
+
+func init() {
+	mongoUrl := "mongo"
+	if url, exists := os.LookupEnv("MONGO_URL"); exists {
+		mongoUrl = url
+	}
+	var err error
+	for {
+		mongoSession, err = mgo.Dial(mongoUrl)
+		if err == nil {
+			break
+		}
+		fmt.Printf("MongoDB not accessible, trying again in 5 seconds...")
+		time.Sleep(5 * time.Second)
+	}
+	mongoSession.SetMode(mgo.Monotonic, true)
+
+	indexes := []mgo.Index{
+		mgo.Index{
+			Key: []string{"base.repo.fullname"},
+			Background: true,
+		},
+		mgo.Index{
+			Key: []string{"mergedat"},
+			Background: true,
+		},
+		mgo.Index{
+			Key: []string{"comments"},
+			Background: true,
+		},
+	}
+	c := mongoSession.DB("github").C("pulls")
+	for _, index := range indexes {
+		c.EnsureIndex(index)
+	}
 }
 
-
 func GetProjectTimeline(nameQuery string, size int, importance int, skipToken string) ([]*github.PullRequest, error) {
-	mongo_url := "mongo"
-	if url, exists := os.LookupEnv("MONGO_URL"); exists {
-		mongo_url = url
-	}
-	session, err := mgo.Dial(mongo_url)
-	if err != nil {
-		return nil, err
-	}
-	defer session.Close()
-
-	session.SetMode(mgo.Monotonic, true)
-	c := session.DB("github").C("pulls")
+	c := mongoSession.DB("github").C("pulls")
 
 	format := "2006-01-02T15:04:05.000Z"
 	var skipTime time.Time
+	var err error
 	if skipToken != "" {
 		skipTime, err = time.Parse(format, skipToken)
 		if err != nil {
@@ -57,4 +80,8 @@ func GetProjectTimeline(nameQuery string, size int, importance int, skipToken st
 		return nil, err
 	}
 	return prs, nil
+}
+
+func CleanUp() {
+	mongoSession.Close()
 }
