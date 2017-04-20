@@ -19,8 +19,6 @@ func main() {
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./www")))
 
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./www")))
-
 	n := negroni.Classic()
 	n.UseHandler(r)
 
