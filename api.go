@@ -17,6 +17,10 @@ func main() {
 
 	r.HandleFunc("/{org}/{repo}", handlers.GetPulls).Methods("GET")
 
+	r.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
+		http.ServeFile(rw, r, "./www/index.html")
+	})
+
 	n := negroni.Classic()
 	n.UseHandler(r)
 
