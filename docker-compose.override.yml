@@ -7,7 +7,7 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - $GOPATH/src:/go/src
+      - ${GOPATH:-/go}/src:/go/src
 
   mongo:
     image: mongo
