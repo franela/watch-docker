@@ -15,7 +15,7 @@ type Pull struct {
 }
 
 
-func GetProjectTimeline(nameQuery string, size int, skipToken string) ([]*github.PullRequest, error) {
+func GetProjectTimeline(nameQuery string, size int, importance int, skipToken string) ([]*github.PullRequest, error) {
 	mongo_url := "mongo"
 	if url, exists := os.LookupEnv("MONGO_URL"); exists {
 		mongo_url = url
@@ -41,9 +41,16 @@ func GetProjectTimeline(nameQuery string, size int, skipToken string) ([]*github
 	prs := []*github.PullRequest{}
 	var query bson.M
 	if skipToken != "" {
-		query = bson.M{"mergedat": bson.M{"$lt": skipTime}, "base.repo.fullname": bson.M{"$regex": fmt.Sprintf(".*%s.*", nameQuery)}}
+		query = bson.M{
+			"comments": bson.M{"$gt": importance},
+			"mergedat": bson.M{"$lt": skipTime},
+			"base.repo.fullname": bson.M{"$regex": fmt.Sprintf(".*%s.*", nameQuery)},
+		}
 	} else {
-		query = bson.M{"base.repo.fullname": bson.M{"$regex": fmt.Sprintf(".*%s.*", nameQuery)}}
+		query = bson.M{
+			"comments": bson.M{"$gt": importance},
+			"base.repo.fullname": bson.M{"$regex": fmt.Sprintf(".*%s.*", nameQuery)},
+		}
 	}
 	
 	if err = c.Find(query).Sort("-mergedat").Limit(size).All(&prs); err != nil {

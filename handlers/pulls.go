@@ -12,7 +12,7 @@ func GetPulls(rw http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("q")
 	fmt.Println(query)
 
-	prs, err := timeline.GetProjectTimeline("moby", 20, "2017-04-20T12:55:46Z")
+	prs, err := timeline.GetProjectTimeline("moby", 20, 10, "2017-04-20T12:55:46Z")
 	if err != nil {
 		return
 	}
