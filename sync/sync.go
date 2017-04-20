@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 
 	"github.com/google/go-github/github"
 
@@ -17,7 +18,7 @@ type Pull struct {
 
 func main() {
 	token := ""
-	
+
 	mongoUrl := "mongo"
 	if url, exists := os.LookupEnv("MONGO_URL"); exists {
 		mongoUrl = url

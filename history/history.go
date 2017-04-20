@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 
 	mgo "gopkg.in/mgo.v2"
 
@@ -17,7 +18,7 @@ type Pull struct {
 
 func main() {
 	token := ""
-	
+
 	mongo_url := "mongo"
 	if url, exists := os.LookupEnv("MONGO_URL"); exists {
 		mongo_url = url
@@ -38,16 +39,8 @@ func main() {
 	tc := oauth2.NewClient(ctx, ts)
 	client := github.NewClient(tc)
 
-	/*
-		lastPull = Pull{}
-		err := c.Find(nil).Sort("-_id").One(&lastPull)
-		if err != nil {
-			log.Fatal("Could not get the last pull request from DB", err)
-		}
-	*/
-
+	opts := &github.PullRequestListOptions{State: "closed"}
 	for {
-		opts := &github.PullRequestListOptions{State: "closed"}
 		prs, resp, err := client.PullRequests.List(ctx, "moby", "moby", opts)
 		if err != nil {
 			log.Println(err)
@@ -67,6 +60,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
+			log.Printf("Inserted PR [%d]\n", *pr.Number)
 		}
 
 		if resp.NextPage == 0 {
