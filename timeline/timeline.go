@@ -2,12 +2,12 @@ package timeline
 
 import (
 	"fmt"
-	"time"
 	"os"
+	"time"
 
+	"github.com/google/go-github/github"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"github.com/google/go-github/github"
 )
 
 var mongoSession *mgo.Session
@@ -30,15 +30,15 @@ func init() {
 
 	indexes := []mgo.Index{
 		mgo.Index{
-			Key: []string{"base.repo.fullname"},
+			Key:        []string{"base.repo.fullname"},
 			Background: true,
 		},
 		mgo.Index{
-			Key: []string{"mergedat"},
+			Key:        []string{"mergedat"},
 			Background: true,
 		},
 		mgo.Index{
-			Key: []string{"comments"},
+			Key:        []string{"comments"},
 			Background: true,
 		},
 	}
@@ -51,7 +51,7 @@ func init() {
 func GetProjectTimeline(nameQuery string, size int, importance int, skipToken string) ([]*github.PullRequest, error) {
 	c := mongoSession.DB("github").C("pulls")
 
-	format := "2006-01-02T15:04:05.000Z"
+	format := "2006-01-02T15:04:05Z"
 	var skipTime time.Time
 	var err error
 	if skipToken != "" {
@@ -65,20 +65,20 @@ func GetProjectTimeline(nameQuery string, size int, importance int, skipToken st
 	var query bson.M
 	if skipToken != "" {
 		query = bson.M{
-			"comments": bson.M{"$gt": importance},
-			"mergedat": bson.M{"$lt": skipTime},
+			"comments":           bson.M{"$gt": importance},
+			"mergedat":           bson.M{"$lt": skipTime},
 			"base.repo.fullname": bson.M{"$regex": fmt.Sprintf(".*%s.*", nameQuery)},
 		}
 	} else {
 		query = bson.M{
-			"comments": bson.M{"$gt": importance},
+			"comments":           bson.M{"$gt": importance},
 			"base.repo.fullname": bson.M{"$regex": fmt.Sprintf(".*%s.*", nameQuery)},
 		}
 	}
-	
-	if err = c.Find(query).Sort("-mergedat").Limit(size).All(&prs); err != nil {
+	if err = c.Find(query).Sort("-mergedat").All(&prs); err != nil {
 		return nil, err
 	}
+
 	return prs, nil
 }
 

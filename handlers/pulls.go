@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/franela/watch-docker/timeline"
@@ -10,9 +9,9 @@ import (
 
 func GetPulls(rw http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("q")
-	fmt.Println(query)
+	skip := r.URL.Query().Get("skip")
 
-	prs, err := timeline.GetProjectTimeline("moby", 20, 10, "2017-04-20T12:55:46Z")
+	prs, err := timeline.GetProjectTimeline(query, 21, 10, skip)
 	if err != nil {
 		return
 	}
