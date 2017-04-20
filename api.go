@@ -21,6 +21,8 @@ func main() {
 		http.ServeFile(rw, r, "./www/index.html")
 	})
 
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./www")))
+
 	n := negroni.Classic()
 	n.UseHandler(r)
 
