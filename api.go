@@ -17,9 +17,7 @@ func main() {
 
 	r.HandleFunc("/{org}/{repo}", handlers.GetPulls).Methods("GET")
 
-	r.HandleFunc("/", func(rw http.ResponseWriter, r *http.Request) {
-		http.ServeFile(rw, r, "./www/index.html")
-	})
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./www")))
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./www")))
 
