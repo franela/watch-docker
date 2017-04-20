@@ -15,7 +15,7 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/{org}/{repo}", handlers.GetPulls).Methods("GET")
+	r.HandleFunc("/timeline", handlers.GetPulls).Methods("GET")
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./www")))
 

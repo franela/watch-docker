@@ -2,17 +2,15 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/google/go-github/github"
 )
 
 func GetPulls(rw http.ResponseWriter, r *http.Request) {
-	//vars := mux.Vars(r)
-	//repo := vars["repo"]
-	//org := vars["org"]
-
-	//pull := r.URL.Query().Get("pull")
+	query := r.URL.Query().Get("q")
+	fmt.Println(query)
 
 	// TODO fetch prs from DB
 
