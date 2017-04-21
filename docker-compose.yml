@@ -3,7 +3,7 @@ version: '3.2'
 services:
   web:
     image: franela/watch-docker:${TAG:-latest}
-    command: ./watch-docker
+    command: watch-docker
     environment:
       - PORT=3000
     deploy:
@@ -17,11 +17,14 @@ services:
         - traefik.enable=true
     networks:
       - frontend
+      - default
 
   mongo:
     image: mongo
     volumes:
       - mongo:/data/db
+    networks:
+      - default
 
 volumes:
   mongo:
@@ -29,3 +32,4 @@ volumes:
 networks:
   frontend:
     external: true
+  default:
