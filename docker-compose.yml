@@ -14,6 +14,8 @@ services:
       - traefik.frontend.entryPoints=http,https
       - traefik.port=3000
       - traefik.enable=true
+    networks:
+      - frontend
 
   mongo:
     image: mongo
@@ -22,3 +24,7 @@ services:
 
 volumes:
   mongo:
+
+networks:
+  frontend:
+    external: true
