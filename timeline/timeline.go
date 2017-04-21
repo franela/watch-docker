@@ -41,6 +41,12 @@ func init() {
 			Key:        []string{"comments"},
 			Background: true,
 		},
+		mgo.Index{
+			Key: []string{"number", "base.repo.fullname"},
+			Unique: true,
+			DropDups: true,
+			Background: true,
+		},
 	}
 	c := mongoSession.DB("github").C("pulls")
 	for _, index := range indexes {

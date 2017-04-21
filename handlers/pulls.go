@@ -11,7 +11,7 @@ func GetPulls(rw http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("q")
 	skip := r.URL.Query().Get("skip")
 
-	prs, err := timeline.GetProjectTimeline(query, 21, 10, skip)
+	prs, err := timeline.GetProjectTimeline(query, 21, 20, skip)
 	if err != nil {
 		return
 	}
