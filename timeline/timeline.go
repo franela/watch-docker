@@ -75,7 +75,7 @@ func GetProjectTimeline(nameQuery string, size int, importance int, skipToken st
 			"base.repo.fullname": bson.M{"$regex": fmt.Sprintf(".*%s.*", nameQuery)},
 		}
 	}
-	if err = c.Find(query).Sort("-mergedat").All(&prs); err != nil {
+	if err = c.Find(query).Sort("-mergedat").Limit(size).All(&prs); err != nil {
 		return nil, err
 	}
 

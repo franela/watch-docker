@@ -1,0 +1,43 @@
+<div class="container-fluid ng-scope" style="margin:3%;" infinite-scroll="getNextPage()"  infinite-scroll-distance="0">
+  <timeline>
+    <!-- can also hard-code to side="left" or side="right" -->
+    <timeline-event ng-repeat="feature in dockerImportantFeatures" side="{{side}}">
+      <!-- uses angular-scroll-animate to give it some pop -->
+      <timeline-badge class="{{feature.badgeClass}} timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+        <img class="avatar img-circle" src="{{feature.user.avatar_url}}"></img>
+      </timeline-badge>
+      <!-- uses angular-scroll-animate to give it some pop -->
+      <timeline-panel class="{{feature.badgeClass}} timeline-hidden"
+                      when-visible="animateElementIn" when-not-visible="animateElementOut">
+        <timeline-heading ng-click="showBody = !showBody">
+          <span class="project_title">{{feature.base.repo.full_name}}</span>
+          <div style="cursor:pointer; background: #f1f1f1; padding: 3%;">
+          <h4>{{feature.title}}</h4>
+          <p ng-if="feature.created_at">
+            <small class="text-muted"><i class="glyphicon glyphicon-time"></i>{{feature.created_at | date:'medium'}}</small>
+          </p>
+        </div>
+        </timeline-heading>
+        <p btf-markdown="feature.body" ng-if="feature.body" ng-show="showBody" style="margin-top: 2%;"></p>
+        <timeline-footer ng-if="feature.html_url" style="float:right;">
+          <a href="http://play-with-docker.com/" target="_blank">PWD</a>
+          <a href="{{feature.html_url}}" target="_blank">github<!--img src="assets/github-circle.png"/--></a>
+        </timeline-footer>
+      </timeline-panel>
+    </timeline-event>
+  </timeline>
+
+</div>
+
+<style>
+.avatar{
+  width: 90%;
+height: 90%;
+margin-bottom: 14%;
+}
+.project_title{
+  padding: 3px;
+  font-size: 10px;
+}
+</style>
