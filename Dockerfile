@@ -6,4 +6,4 @@ WORKDIR /go/src/github.com/franela/watch-docker
 
 # Build the binary
 RUN go get ./...
-CMD ["./watch-docker"]
+CMD ["watch-docker"]
