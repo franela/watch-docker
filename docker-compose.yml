@@ -9,8 +9,7 @@ services:
     deploy:
       labels:
         - traefik.backend=watch-docker
-        - traefik.frontend.rule=Host:watch-docker.com
-        - traefik.frontend.rule=Host:www.watch-docker.com
+        - traefik.frontend.rule=Host:www.watch-docker.com,watch-docker.com
         - traefik.frontend.passHostHeader=true
         - traefik.frontend.entryPoints=http,https
         - traefik.port=3000
