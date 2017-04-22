@@ -1,4 +1,4 @@
-<div class="container-fluid ng-scope" style="margin:3%;" infinite-scroll="getNextPage()"  infinite-scroll-distance="0">
+<div class="container-fluid ng-scope" style="margin:3%;" infinite-scroll="getNextPage()"  infinite-scroll-distance="0" infinite-scroll-disabled="loadingFeatures">
   <timeline>
     <!-- can also hard-code to side="left" or side="right" -->
     <timeline-event ng-repeat="feature in dockerImportantFeatures" side="{{side}}">

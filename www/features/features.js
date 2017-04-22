@@ -21,7 +21,7 @@ angular.module('myApp.features', ['ngRoute', 'angular-timeline', 'btford.markdow
   });
 }])
 
-.controller('FeaturesCtrl', function(features, Features, $scope) {
+.controller('FeaturesCtrl', function(features, Features, $scope, $timeout) {
 
   $scope.dockerImportantFeatures = features.data;
   $scope.show = true;
@@ -32,14 +32,19 @@ angular.module('myApp.features', ['ngRoute', 'angular-timeline', 'btford.markdow
         query: "",
         skip: $scope.dockerImportantFeatures[$scope.dockerImportantFeatures.length - 1].merged_at,
     }
+    if ($scope.loadingFeatures == true) {
+      return;
+    }
+    $scope.loadingFeatures = true;
 
     Features.getFeatures(searchParams).success(function (data, status) {
           if (status == 200) {
             for (var i = 0; i < data.length; i++) {
               $scope.dockerImportantFeatures.push(data[i]);
             }
+            // Make sure the layout is rendered before enabling again
+            $timeout(function() {$scope.loadingFeatures = false}, 500);
             return;
-            //$rootScope.loading = false;
           }
     });
   };
