@@ -17,13 +17,15 @@ angular.module('myApp.features', ['ngRoute', 'angular-timeline', 'btford.markdow
 }])
 
 .controller('FeaturesCtrl', function(Features, $scope, $timeout, $routeParams) {
-  $scope.curate = $routeParams.curate;
+  $scope.curated = $routeParams.curate || false;
   $scope.dockerImportantFeatures = [];
 
   $scope.start = function() {
       Features.getFeatures({curate: $routeParams.curate}).success(function(data, status) {
           if (status == 200) {
             for (var i = 0; i < data.length; i++) {
+              data[i].merged_at = moment(data[i].merged_at).fromNow();
+              data[i].created_at = moment(data[i].created_at).fromNow();
               $scope.dockerImportantFeatures.push(data[i]);
             }
             $scope.show = true;
@@ -61,6 +63,8 @@ angular.module('myApp.features', ['ngRoute', 'angular-timeline', 'btford.markdow
     Features.getFeatures(searchParams).success(function (data, status) {
           if (status == 200) {
             for (var i = 0; i < data.length; i++) {
+              data[i].merged_at = moment(data[i].merged_at).fromNow();
+              data[i].created_at = moment(data[i].created_at).fromNow();
               $scope.dockerImportantFeatures.push(data[i]);
             }
             // Make sure the layout is rendered before enabling again

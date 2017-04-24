@@ -13,7 +13,7 @@ import (
 )
 
 type Pull struct {
-	*github.PullRequest
+	_ *github.PullRequest
 
 	Curated bool `json:curated`
 }
@@ -64,7 +64,7 @@ func main() {
 				continue
 			}
 			log.Printf("Inserting PR [%d]\n", *pr.Number)
-			err = c.Insert(Pull{pr, false})
+			err = c.Insert(pr)
 			if err != nil {
 				log.Fatal(err)
 			}

@@ -45,7 +45,7 @@ func main() {
 	client := github.NewClient(tc)
 
 	lastPull := Pull{}
-	err = c.Find(nil).Sort("-mergedat").One(&lastPull)
+	err = c.Find(nil).Sort("-createdat").One(&lastPull)
 	if err != nil {
 		log.Fatal("Could not get the last pull request from DB", err)
 	}

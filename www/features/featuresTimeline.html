@@ -15,7 +15,8 @@
           <div style="cursor:pointer; background: #f1f1f1; padding: 3%;">
           <h4>{{feature.title}}</h4>
           <p ng-if="feature.created_at">
-            <small class="text-muted"><i class="glyphicon glyphicon-time"></i>{{feature.created_at | date:'medium'}}</small>
+          <small class="text-muted"><i class="glyphicon glyphicon-time"></i>Merged: {{feature.merged_at}}</small><br />
+            <small class="text-muted"><i class="glyphicon glyphicon-time"></i>Created: {{feature.created_at}}</small>
           </p>
         </div>
         </timeline-heading>
@@ -23,8 +24,8 @@
         <timeline-footer ng-if="feature.html_url" style="float:right;">
           <a href="http://play-with-docker.com/" target="_blank">PWD</a>
           <a href="{{feature.html_url}}" target="_blank">github<!--img src="assets/github-circle.png"/--></a>
-          <a href="" ng-click="curate(feature, true)" ng-if="curate">Yes</a>
-          <a href="" ng-click="curate(feature, false)" ng-if="curate">No</a>
+          <a href="" ng-click="curate(feature, true)" ng-if="curated">Yes</a>
+          <a href="" ng-click="curate(feature, false)" ng-if="curated">No</a>
         </timeline-footer>
       </timeline-panel>
     </timeline-event>
