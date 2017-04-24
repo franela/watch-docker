@@ -11,7 +11,6 @@ angular.module('myApp', [
 config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
   $locationProvider.hashPrefix('!');
   $routeProvider.otherwise({redirectTo: '/features'});
-
 }]);
 
 var appFactories = angular.module('myApp.Factories', []);

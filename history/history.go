@@ -13,11 +13,18 @@ import (
 )
 
 type Pull struct {
-	Id int64 `json:id`
+	*github.PullRequest
+
+	Curated bool `json:curated`
 }
 
 func main() {
 	token := ""
+	if t, exists := os.LookupEnv("GITHUB_TOKEN"); !exists {
+		log.Fatal("Please set GITHUB_TOKEN with a valid github token")
+	} else {
+		token = t
+	}
 
 	mongo_url := "mongo"
 	if url, exists := os.LookupEnv("MONGO_URL"); exists {
@@ -56,7 +63,8 @@ func main() {
 				log.Println(err)
 				continue
 			}
-			err = c.Insert(pr)
+			log.Printf("Inserting PR [%d]\n", *pr.Number)
+			err = c.Insert(Pull{pr, false})
 			if err != nil {
 				log.Fatal(err)
 			}

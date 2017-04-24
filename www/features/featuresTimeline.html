@@ -23,6 +23,8 @@
         <timeline-footer ng-if="feature.html_url" style="float:right;">
           <a href="http://play-with-docker.com/" target="_blank">PWD</a>
           <a href="{{feature.html_url}}" target="_blank">github<!--img src="assets/github-circle.png"/--></a>
+          <a href="" ng-click="curate(feature, true)" ng-if="curate">Yes</a>
+          <a href="" ng-click="curate(feature, false)" ng-if="curate">No</a>
         </timeline-footer>
       </timeline-panel>
     </timeline-event>

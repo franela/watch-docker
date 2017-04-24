@@ -18,6 +18,11 @@ type Pull struct {
 
 func main() {
 	token := ""
+	if t, exists := os.LookupEnv("GITHUB_TOKEN"); !exists {
+		log.Fatal("Please set GITHUB_TOKEN with a valid github token")
+	} else {
+		token = t
+	}
 
 	mongoUrl := "mongo"
 	if url, exists := os.LookupEnv("MONGO_URL"); exists {
@@ -40,7 +45,7 @@ func main() {
 	client := github.NewClient(tc)
 
 	lastPull := Pull{}
-	err = c.Find(nil).Sort("-number").One(&lastPull)
+	err = c.Find(nil).Sort("-mergedat").One(&lastPull)
 	if err != nil {
 		log.Fatal("Could not get the last pull request from DB", err)
 	}
@@ -55,7 +60,7 @@ func main() {
 		}
 
 		for _, pr := range prs {
-			if *pr.Number <= int(lastPull.Number) {
+			if *pr.Number == int(lastPull.Number) {
 				synced = true
 				break
 			}

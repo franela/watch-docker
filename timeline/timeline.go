@@ -12,6 +12,12 @@ import (
 
 var mongoSession *mgo.Session
 
+type CurationRequest struct {
+	Repo    string `json:"repo"`
+	Number  int    `json:"number"`
+	Curated *bool  `json:"curated"`
+}
+
 func init() {
 	mongoUrl := "mongo"
 	if url, exists := os.LookupEnv("MONGO_URL"); exists {
@@ -42,19 +48,20 @@ func init() {
 			Background: true,
 		},
 		mgo.Index{
-			Key: []string{"number", "base.repo.fullname"},
-			Unique: true,
-			DropDups: true,
+			Key:        []string{"base.repo.fullname", "number"},
+			Unique:     true,
+			DropDups:   true,
 			Background: true,
 		},
 	}
+
 	c := mongoSession.DB("github").C("pulls")
 	for _, index := range indexes {
 		c.EnsureIndex(index)
 	}
 }
 
-func GetProjectTimeline(nameQuery string, size int, importance int, skipToken string) ([]*github.PullRequest, error) {
+func GetProjectTimeline(nameQuery string, size int, skipToken string, curate bool) ([]*github.PullRequest, error) {
 	c := mongoSession.DB("github").C("pulls")
 
 	format := "2006-01-02T15:04:05Z"
@@ -68,24 +75,30 @@ func GetProjectTimeline(nameQuery string, size int, importance int, skipToken st
 	}
 
 	prs := []*github.PullRequest{}
-	var query bson.M
+	query := bson.M{
+		"curated":            true,
+		"base.repo.fullname": bson.M{"$regex": fmt.Sprintf(".*%s.*", nameQuery)},
+	}
+	if curate {
+		query["curated"] = nil
+	}
 	if skipToken != "" {
-		query = bson.M{
-			"comments":           bson.M{"$gt": importance},
-			"mergedat":           bson.M{"$lt": skipTime},
-			"base.repo.fullname": bson.M{"$regex": fmt.Sprintf(".*%s.*", nameQuery)},
-		}
-	} else {
-		query = bson.M{
-			"comments":           bson.M{"$gt": importance},
-			"base.repo.fullname": bson.M{"$regex": fmt.Sprintf(".*%s.*", nameQuery)},
-		}
+		query["margedat"] = bson.M{"$lt": skipTime}
 	}
 	if err = c.Find(query).Sort("-mergedat").Limit(size).All(&prs); err != nil {
 		return nil, err
 	}
 
 	return prs, nil
+}
+
+func CuratePullRequest(r CurationRequest) error {
+	c := mongoSession.DB("github").C("pulls")
+
+	query := bson.M{"number": r.Number, "base.repo.fullname": r.Repo}
+	change := bson.M{"$set": bson.M{"curated": r.Curated}}
+
+	return c.Update(query, change)
 }
 
 func CleanUp() {

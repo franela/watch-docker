@@ -16,6 +16,7 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/timeline", handlers.GetPulls).Methods("GET")
+	r.HandleFunc("/pulls", handlers.CuratePull).Methods("PUT")
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./www")))
 
